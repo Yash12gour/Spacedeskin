@@ -5,6 +5,7 @@ import {
   Camera,
   Calendar,
   ArrowRight,
+  X,
 } from 'lucide-react';
 import { ImageWithFallback } from './ImageWithFallback';
 import { Reveal } from './Reveal';
@@ -58,7 +59,7 @@ const GALLERY_COLLECTION: GalleryPhoto[] = [
     alt: 'Meeting room with a long wooden table, chairs and a large window',
     category: 'meeting',
     spanClass: 'md:col-span-4 lg:col-span-4',
-    aspectClass: 'aspect-[4/3] md:aspect-[4/5]',
+    aspectClass: 'aspect-[4/5]',
     imageUrl: galleryPhoto2,
   },
   {
@@ -130,6 +131,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
   onNavigateHome,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [activeLightboxPhoto, setActiveLightboxPhoto] = useState<GalleryPhoto | null>(null);
 
   const categories = [
     { id: 'all', label: 'All Photos' },
@@ -314,10 +316,23 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
                   <div
                     className="group relative rounded-3xl overflow-hidden bg-white border border-[var(--color-border)] shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between h-full"
                   >
-                    <div className={`relative w-full ${photo.aspectClass} overflow-hidden`}>
+                    <div
+                      className={`relative w-full ${photo.aspectClass} overflow-hidden cursor-pointer`}
+                      onClick={() => setActiveLightboxPhoto(photo)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setActiveLightboxPhoto(photo);
+                        }
+                      }}
+                      aria-label={`Expand ${photo.caption} photo`}
+                    >
                       <ImageWithFallback
                         src={photo.imageUrl}
                         alt={photo.alt}
+                        containerClassName="w-full h-full"
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -340,12 +355,14 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
                           {photo.caption}
                         </h3>
                       </div>
-                      <div
-                        className="w-8 h-8 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center text-[var(--color-charcoal)] group-hover:bg-[var(--color-primary)] group-hover:scale-110 transition-all shrink-0 ml-2"
-                        aria-hidden="true"
+                      <button
+                        type="button"
+                        onClick={() => setActiveLightboxPhoto(photo)}
+                        className="w-8 h-8 rounded-full bg-[var(--color-bg-warm)] flex items-center justify-center text-[var(--color-charcoal)] group-hover:bg-[var(--color-primary)] group-hover:scale-110 transition-all shrink-0 ml-2 cursor-pointer border-0"
+                        aria-label={`Expand ${photo.caption} in full resolution`}
                       >
                         <Maximize2 className="w-3.5 h-3.5" />
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </Reveal>
@@ -383,6 +400,42 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
           </div>
         </Reveal>
       </section>
+
+      {/* Fullscreen Lightbox Modal to Expand Image in High Resolution */}
+      {activeLightboxPhoto && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setActiveLightboxPhoto(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setActiveLightboxPhoto(null)}
+            className="absolute top-5 right-5 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 border-0"
+            aria-label="Close enlarged photo"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <div
+            className="relative max-w-5xl max-h-[90vh] w-full flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={activeLightboxPhoto.imageUrl}
+              alt={activeLightboxPhoto.alt}
+              className="max-w-full max-h-[78vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <div className="mt-4 text-center text-white">
+              <span className="text-xs uppercase tracking-wider text-[var(--color-primary)] font-bold block mb-1">
+                {activeLightboxPhoto.badge}
+              </span>
+              <p className="text-base font-medium">{activeLightboxPhoto.caption}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

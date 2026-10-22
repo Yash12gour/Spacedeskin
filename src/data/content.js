@@ -273,7 +273,7 @@ export const contactSection = {
   details: {
     phone: "+91 92329 42092",
     email: "info@spacedesk.in",
-    address: "Jaswant Tower, 4th Floor, Narmadapuram Road, Misrod, Bhopal, Madhya Pradesh 462026",
+    address: "Jaswant Tower,Office No.4,5,6, 4th Floor, Narmadapuram Road, Misrod, Bhopal, Madhya Pradesh 462026",
     hours: "Mon to Sat, 8:00 AM to 9:00 PM",
     whatsappUrl: "https://wa.me/919232942092",
   },
