@@ -58,7 +58,7 @@ const GALLERY_COLLECTION: GalleryPhoto[] = [
     alt: 'Meeting room with a long wooden table, chairs and a large window',
     category: 'meeting',
     spanClass: 'md:col-span-4 lg:col-span-4',
-    aspectClass: 'aspect-[4/5]',
+    aspectClass: 'aspect-[4/3] md:aspect-[4/5]',
     imageUrl: galleryPhoto2,
   },
   {
@@ -68,7 +68,7 @@ const GALLERY_COLLECTION: GalleryPhoto[] = [
     alt: 'People working on laptops at a shared table',
     category: 'lounges',
     spanClass: 'md:col-span-4 lg:col-span-4',
-    aspectClass: 'aspect-[4/5]',
+    aspectClass: 'aspect-[4/3] md:aspect-[4/5]',
     imageUrl: galleryPhoto3,
   },
   {
