@@ -379,7 +379,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     Campus Address
                   </span>
                   <h3 className="card-title text-base mb-2">
-                    Jaswant Tower, 4th Floor
+                    Jaswant Tower, Office No. 4,5,6 4TH Floor
                   </h3>
                   <p className="text-xs text-[var(--color-text)] leading-relaxed">
                     Narmadapuram Rd, Misrod, Bhopal, MP 462026.

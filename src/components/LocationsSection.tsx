@@ -86,7 +86,7 @@ export const LocationsSection: React.FC<LocationsSectionProps> = React.memo(({ o
                     <MapPin className="w-4 h-4 text-[var(--color-gold)] shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-[var(--color-charcoal)]">{selectedLocation.address}</p>
-                      {selectedLocation.city && !selectedLocation.address.includes(selectedLocation.city) && (
+                      {selectedLocation.city && !selectedLocation.address.toLowerCase().includes('bhopal') && (
                         <p className="text-xs text-[var(--color-text)]">{selectedLocation.city}, {selectedLocation.postalCode}</p>
                       )}
                     </div>

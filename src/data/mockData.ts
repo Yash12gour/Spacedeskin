@@ -213,7 +213,7 @@ export const LOCATIONS: LocationItem[] = [
     id: 'jaswant-tower',
     name: 'SpaceDesk Co-Working, Misrod',
     neighborhood: 'Misrod, Narmadapuram Rd',
-    address: 'Jaswant Tower, 4th Floor, Narmadapuram Road, Misrod, Bhopal, Madhya Pradesh 462026',
+    address: 'OFFICE NO. 4,5,6 4TH FLOOR, JASWANT TOWER HOSHANGABAD ROAD, BHOPAL',
     city: 'Bhopal, Madhya Pradesh',
     postalCode: '462026',
     hours: 'Mon to Sat, 8:00 AM to 9:00 PM (24/7 access for Dedicated Desk and Private Cabin members)',

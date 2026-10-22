@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { ImageWithFallback } from './ImageWithFallback';
+import { WordPressService, NormalizedArticle } from '../services/wordpress';
 
 export const BlogSection: React.FC = () => {
-  const articles = [
+  const [articles, setArticles] = useState<Array<{ id: string; slug: string; tag: string; date: string; title: string; excerpt: string; imageUrl: string }>>([
     {
       id: 'art-1',
+      slug: 'meeting-room-rental-guide',
       tag: 'MEETING ROOMS',
       date: '07 Sept 2026',
       title: 'Meeting Room Rental Guide: How to Choose the Right Space for Your Business Meetings',
@@ -14,6 +16,7 @@ export const BlogSection: React.FC = () => {
     },
     {
       id: 'art-2',
+      slug: 'conference-room-benefits',
       tag: 'MEETING ROOMS',
       date: '01 Sept 2026',
       title: 'How a Professional Conference Room Can Improve Your Business Meetings',
@@ -22,13 +25,48 @@ export const BlogSection: React.FC = () => {
     },
     {
       id: 'art-3',
+      slug: 'coworking-vs-working-from-home',
       tag: 'DEDICATED DESK',
       date: '18 Sept 2026',
       title: 'Co-working vs Working From Home: Which One Actually Works for You?',
       excerpt: 'Working from home looks great on paper: no commute, flexible hours, complete comfort. In reality? Constant home distractions and lack of boundary.',
       imageUrl: 'https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?auto=format&fit=crop&w=800&q=80',
     },
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    WordPressService.getPosts(3)
+      .then((posts) => {
+        if (!isMounted) return;
+        if (posts && posts.length > 0) {
+          const mapped = posts.map((p) => ({
+            id: p.id,
+            slug: p.slug,
+            tag: p.category.toUpperCase(),
+            date: p.date,
+            title: p.title,
+            excerpt: p.excerpt,
+            imageUrl: p.imageUrl,
+          }));
+          setArticles(mapped);
+        }
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        console.warn('WordPress API fetch warning in BlogSection:', err);
+        setError('Showing cached articles.');
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <section className="py-20 md:py-28 bg-[#FAF8F5] text-gray-900 border-t border-gray-200">
@@ -46,21 +84,37 @@ export const BlogSection: React.FC = () => {
           </div>
 
           <div className="hidden sm:flex items-center gap-2">
-            <button className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <button aria-label="Previous articles" className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
               <ArrowLeft className="w-4 h-4 text-gray-700" />
             </button>
-            <button className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <button aria-label="Next articles" className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
               <ArrowRight className="w-4 h-4 text-gray-700" />
             </button>
           </div>
         </div>
 
+        {/* Loading and Error states */}
+        {loading && (
+          <div className="py-12 flex items-center justify-center gap-2 text-sm text-gray-500">
+            <Loader2 className="w-5 h-5 animate-spin text-[#B45309]" />
+            <span>Loading latest posts from WordPress...</span>
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {/* 3-Card Grid with Yellow Pill Tags */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {articles.map((art) => (
-            <div
+            <a
               key={art.id}
-              className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+              href={`#blogs/${art.slug}`}
+              className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group block text-left"
             >
               <div>
                 <div className="relative h-48 overflow-hidden bg-gray-100">
@@ -70,7 +124,7 @@ export const BlogSection: React.FC = () => {
                     fallbackTitle={art.title}
                     theme="neutral"
                     containerClassName="w-full h-full"
-                    className="group-hover:scale-105 transition-transform duration-500"
+                    className="group-hover:scale-105 transition-transform duration-500 w-full h-full object-cover"
                   />
                   {/* Yellow category badge matching Reference */}
                   <span className="absolute top-3 left-3 bg-[#FFDE00] text-gray-950 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
@@ -82,7 +136,7 @@ export const BlogSection: React.FC = () => {
                   <span className="text-[11px] font-mono text-gray-400 block mb-2">
                     {art.date}
                   </span>
-                  <h3 className="font-display text-lg font-bold text-gray-900 leading-snug group-hover:text-[#B45309] transition-colors">
+                  <h3 className="font-display text-lg font-bold text-gray-900 leading-snug group-hover:text-[#B45309] transition-colors line-clamp-2">
                     {art.title}
                   </h3>
                   <p className="text-xs text-gray-600 mt-2.5 leading-relaxed line-clamp-3">
@@ -97,10 +151,11 @@ export const BlogSection: React.FC = () => {
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
     </section>
   );
 };
+
