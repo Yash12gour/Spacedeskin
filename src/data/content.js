@@ -11,6 +11,9 @@ import managedOfficeImage from "../assets/images/regenerated_image_1792406317391
 import testimonial1Image from "../assets/images/regenerated_image_1792559273496.png";
 import testimonial2Image from "../assets/images/regenerated_image_1792558569477.png";
 import testimonial3Image from "../assets/images/regenerated_image_1792559079932.png";
+import avatar1Image from "../assets/images/regenerated_image_1793076033467.png";
+import avatar2Image from "../assets/images/regenerated_image_1793076046510.png";
+import avatar3Image from "../assets/images/regenerated_image_1793076059550.png";
 
 export const brandName = "SpaceDesk";
 
@@ -73,9 +76,9 @@ export const slides = [
 ];
 
 export const avatars = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80",
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80",
+  avatar1Image,
+  avatar2Image,
+  avatar3Image,
 ];
 
 export const newLocationImage = "/images/hero-modern-coworking-office.jpeg";
